@@ -1,0 +1,66 @@
+version: "3.3"
+
+networks:
+  ws_net:
+
+services:
+
+  ws_webstudio:
+    container_name: ws-core-full
+    image: 'geomods/geomods-webstudio:${CAMUNDA_PLATFORM_VERSION:-1.0.2}'
+    environment:
+      webstudio_enableUserDB: true
+      webstudio_enableWorkspace: true
+      workspace_databaseType: s3
+      s3_localstackEndpoint: http://my-workspace:9000 
+      s3_accessKey: myAdminLogin
+      s3_secretKey: myAdminPassword
+      userdb_host: database-postgres
+      userdb_password: psql_password_Demo
+    networks:
+      ws_net:
+        aliases:
+          - webstudio
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ws_store:/store
+  
+  minio:
+    container_name: ws-workspace-storage-minio-s3
+    image: bitnami/minio:latest
+    environment:
+      MINIO_ROOT_USER: myAdminLogin
+      MINIO_ROOT_PASSWORD: myAdminPassword
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      ws_net:
+        aliases:
+          - my-workspace
+    volumes:
+      - ws_workspace_data_minio:/webstudio/minio/data
+
+  ws_dbuser:
+    container_name: ws-userdb
+    build: userDB/.
+    environment:
+      POSTGRES_PASSWORD: psql_password_Demo
+    networks:
+      ws_net:
+        aliases:
+          - database-postgres
+    ports:
+      - "8052:5432"
+    volumes:
+      - ws_dbuser_data:/webstudio/postgresql/data
+
+volumes:
+  ws_workspace_data_minio:
+    external: false
+  ws_dbuser_data:
+    external: false
+  ws_store:
+    external: false
