@@ -28,7 +28,7 @@ You can run the Webstudio-core (without user database nor workspace saving)
 docker run -d \
   -p 80:80 -p 443:443 \
   --env webstudio_enableUserDB=false \
-  geomods/geomods-webstudio:1.0.2 
+  geosiris/geosiris-webstudio:1.0.2 
 ```
 
 Or with docker-compose:

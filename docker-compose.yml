@@ -7,7 +7,7 @@ services:
 
   ws_webstudio:
     container_name: ws-core-full
-    image: 'geomods/geomods-webstudio:${CAMUNDA_PLATFORM_VERSION:-1.0.2}'
+    image: 'geosiris/geosiris-webstudio:${CAMUNDA_PLATFORM_VERSION:-1.0.2}'
     environment:
       webstudio_enableUserDB: true
       webstudio_enableWorkspace: true
